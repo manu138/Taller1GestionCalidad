@@ -4,53 +4,52 @@ using UnityEngine.SceneManagement;
 
 public class Ball : MonoBehaviour
 {
-    public AudioClip saw;
     public Vector3 MousePosition;
-    private Rigidbody2D rb;
-    private bool ballInPlay = false;
-    public int speed;
-    public int counter;
-    Scene scene;
+    private Rigidbody2D rigidBodyCharacter;
+    private bool isCharacterTouchingAnything = false;
+    public int characterSpeed;
+    public int timeCounterWhenCharacterIsTouchingAnything;
+    Scene sceneWherePlayerIsAtThisMoment;
     void Awake()
     {
-        scene = SceneManager.GetActiveScene();
+        sceneWherePlayerIsAtThisMoment = SceneManager.GetActiveScene();
 
-        rb = GetComponent<Rigidbody2D>();
+        rigidBodyCharacter = GetComponent<Rigidbody2D>();
 
-        counter = 0;
+        timeCounterWhenCharacterIsTouchingAnything = 0;
 
     
     }
     private void Start()
     {
         GetComponent<AudioSource>().playOnAwake = false;
-        GetComponent<AudioSource>().clip = saw;
+     
     }
      void FixedUpdate()
     {
-        if (ballInPlay == true)
+        if (isCharacterTouchingAnything == true)
         {
-            counter += 1;
+            timeCounterWhenCharacterIsTouchingAnything += 1;
         }
-        if (counter == 300)
+        if (timeCounterWhenCharacterIsTouchingAnything == 300)
         {
-            SceneManager.LoadScene(scene.name);
+            SceneManager.LoadScene(sceneWherePlayerIsAtThisMoment.name);
         }
-        Vector3 mousePosScreen = Input.mousePosition;
-        Vector3 mousePosWorld = Camera.main.ScreenToWorldPoint(mousePosScreen);
+        Vector3 mousePositionOnScreen = Input.mousePosition;
+        Vector3 mousePositionOnWorld = Camera.main.ScreenToWorldPoint(mousePositionOnScreen);
 
 
 
-        if (Input.GetMouseButton(0) && ballInPlay == false)
+        if (Input.GetMouseButton(0) && isCharacterTouchingAnything == false)
         {
-            ballInPlay = true;
+            isCharacterTouchingAnything = true;
 
             transform.parent = null;
-            ballInPlay = true;
-            rb.isKinematic = false;
-            Vector2 posB = new Vector2(mousePosWorld.x - transform.position.x, mousePosWorld.y - transform.position.y);
+            isCharacterTouchingAnything = true;
+            rigidBodyCharacter.isKinematic = false;
+            Vector2 posB = new Vector2(mousePositionOnWorld.x - transform.position.x, mousePositionOnWorld.y - transform.position.y);
 
-            rb.AddForce(posB.normalized * speed, ForceMode2D.Impulse);
+            rigidBodyCharacter.AddForce(posB.normalized * characterSpeed, ForceMode2D.Impulse);
 
         }
     }
@@ -64,7 +63,7 @@ public class Ball : MonoBehaviour
         }
         int numero = scene.buildIndex + 1;
         if (trigger.CompareTag("Muerte"))
-            SceneManager.LoadScene(scene.name);
+            SceneManager.LoadScene(sceneWherePlayerIsAtThisMoment.name);
 
         else if (trigger.CompareTag("Ganar"))
             SceneManager.LoadScene(numero);
