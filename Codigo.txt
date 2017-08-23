@@ -38,8 +38,6 @@ public class Ball : MonoBehaviour
         Vector3 mousePositionOnScreen = Input.mousePosition;
         Vector3 mousePositionOnWorld = Camera.main.ScreenToWorldPoint(mousePositionOnScreen);
 
-
-
         if (Input.GetMouseButton(0) && isCharacterTouchingAnything == false)
         {
             isCharacterTouchingAnything = true;
@@ -47,9 +45,8 @@ public class Ball : MonoBehaviour
             transform.parent = null;
             isCharacterTouchingAnything = true;
             rigidBodyCharacter.isKinematic = false;
-            Vector2 posB = new Vector2(mousePositionOnWorld.x - transform.position.x, mousePositionOnWorld.y - transform.position.y);
-
-            rigidBodyCharacter.AddForce(posB.normalized * characterSpeed, ForceMode2D.Impulse);
+            Vector2 forceDirection2D = new Vector2(mousePositionOnWorld.x - transform.position.x, mousePositionOnWorld.y - transform.position.y);
+            rigidBodyCharacter.AddForce(forceDirection2D.normalized * characterSpeed, ForceMode2D.Impulse);
 
         }
     }
@@ -57,16 +54,16 @@ public class Ball : MonoBehaviour
     {
         GetComponent<AudioSource>().Play();
 
-        if (trigger.CompareTag("ultimo"))
+        if (trigger.CompareTag("end of the game"))
         {
             SceneManager.LoadScene(0);
         }
-        int numero = scene.buildIndex + 1;
-        if (trigger.CompareTag("Muerte"))
+        int sceneNumber = scene.buildIndex + 1;
+        if (trigger.CompareTag("dead boundary"))
             SceneManager.LoadScene(sceneWherePlayerIsAtThisMoment.name);
 
-        else if (trigger.CompareTag("Ganar"))
-            SceneManager.LoadScene(numero);
+        else if (trigger.CompareTag("win the game"))
+            SceneManager.LoadScene(sceneNumber);
 
 
     }
